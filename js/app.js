@@ -35,15 +35,6 @@
   tickClocks();
   setInterval(tickClocks, 15000);
 
-  const calIcon = document.querySelector('.dock-icon[title="Calendar"] svg');
-  if (calIcon) {
-    const now = new Date();
-    const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-    const texts = calIcon.querySelectorAll('text');
-    if (texts[0]) texts[0].textContent = months[now.getMonth()];
-    if (texts[1]) texts[1].textContent = now.getDate();
-  }
-
   // ── Menu bar dropdowns ───────────────────────────────────────
   const MENUS = {
     apple: [
