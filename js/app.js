@@ -493,6 +493,14 @@
     alert('Video placeholder — Anthony’s personal welcome drops in here.');
   });
 
+  // Marketing cards — tap/click toggles (hover handles desktop)
+  document.querySelectorAll('.mk-card').forEach((card) => {
+    card.addEventListener('click', () => {
+      const open = card.classList.toggle('open');
+      card.setAttribute('aria-expanded', String(open));
+    });
+  });
+
   // ── Ask form ─────────────────────────────────────────────────
   const askForm = document.getElementById('askForm');
   askForm.addEventListener('submit', (e) => {
