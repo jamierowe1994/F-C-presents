@@ -1,0 +1,12 @@
+{
+  "name": "fc-presents",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fine & Country — private pre-valuation presentation demo",
+  "scripts": {
+    "start": "serve . -l tcp://0.0.0.0:${PORT:-3000}"
+  },
+  "dependencies": {
+    "serve": "^14.2.3"
+  }
+}
