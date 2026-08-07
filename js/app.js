@@ -9,17 +9,15 @@
   // ── Config — everything personalised lives here ──────────────
   const CONFIG = {
     clientName: 'Mr Henderson',
-    welcomeAutoAdvanceMs: 5200,
     notificationDelayMs: 2200,
   };
 
   const body = document.body;
   const desktopIntroQuery = window.matchMedia('(min-width: 1024px)');
 
-  // ── Stage management ─────────────────────────────────────────
   const setStage = (stage) => { body.dataset.stage = stage; };
 
-  // ── Live clocks ──────────────────────────────────────────────
+  // ── Live clocks & dock calendar ──────────────────────────────
   const fmtMac = (d) => {
     const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -37,7 +35,6 @@
   tickClocks();
   setInterval(tickClocks, 15000);
 
-  // Dock calendar shows today's date
   const calIcon = document.querySelector('.dock-icon[title="Calendar"] svg');
   if (calIcon) {
     const now = new Date();
@@ -47,7 +44,95 @@
     if (texts[1]) texts[1].textContent = now.getDate();
   }
 
-  // ── Intro: choose desktop mac scene or mobile mail ───────────
+  // ── Menu bar dropdowns ───────────────────────────────────────
+  const MENUS = {
+    apple: [
+      { t: 'About This Mac' }, { sep: true },
+      { t: 'System Settings…' }, { t: 'App Store…' }, { sep: true },
+      { t: 'Recent Items', k: '›' }, { sep: true },
+      { t: 'Force Quit…', k: '⌥⌘⎋' }, { sep: true },
+      { t: 'Sleep' }, { t: 'Restart…' }, { t: 'Shut Down…' }, { sep: true },
+      { t: 'Lock Screen', k: '⌃⌘Q' }, { t: 'Log Out John Henderson…', k: '⇧⌘Q' },
+    ],
+    app: [
+      { t: 'About' }, { sep: true },
+      { t: 'Settings…', k: '⌘,' }, { sep: true },
+      { t: 'Hide', k: '⌘H' }, { t: 'Hide Others', k: '⌥⌘H' }, { t: 'Show All', dim: true }, { sep: true },
+      { t: 'Quit', k: '⌘Q' },
+    ],
+    file: [
+      { t: 'New Message', k: '⌘N' }, { t: 'New Mailbox…' }, { sep: true },
+      { t: 'Open', k: '⌘O', dim: true }, { t: 'Close', k: '⌘W' }, { sep: true },
+      { t: 'Save', k: '⌘S', dim: true }, { t: 'Export as PDF…' }, { sep: true },
+      { t: 'Print…', k: '⌘P' },
+    ],
+    edit: [
+      { t: 'Undo', k: '⌘Z', dim: true }, { t: 'Redo', k: '⇧⌘Z', dim: true }, { sep: true },
+      { t: 'Cut', k: '⌘X' }, { t: 'Copy', k: '⌘C' }, { t: 'Paste', k: '⌘V' }, { sep: true },
+      { t: 'Select All', k: '⌘A' }, { sep: true },
+      { t: 'Find', k: '⌘F' },
+    ],
+    view: [
+      { t: 'as Columns' }, { t: 'as List' }, { t: 'as Gallery' }, { sep: true },
+      { t: 'Show Tab Bar', k: '⇧⌘T' }, { t: 'Show All Tabs', dim: true }, { sep: true },
+      { t: 'Enter Full Screen', k: '⌃⌘F' },
+    ],
+    go: [
+      { t: 'Back', k: '⌘[', dim: true }, { t: 'Forward', k: '⌘]', dim: true }, { sep: true },
+      { t: 'Recents', k: '⇧⌘F' }, { t: 'Documents', k: '⇧⌘O' }, { t: 'Desktop', k: '⇧⌘D' },
+      { t: 'Downloads', k: '⌥⌘L' }, { t: 'Home', k: '⇧⌘H' }, { sep: true },
+      { t: 'Connect to Server…', k: '⌘K' },
+    ],
+    window: [
+      { t: 'Minimise', k: '⌘M' }, { t: 'Zoom' }, { sep: true },
+      { t: 'Tile Window to Left of Screen' }, { t: 'Tile Window to Right of Screen' }, { sep: true },
+      { t: 'Bring All to Front', dim: true },
+    ],
+    help: [
+      { t: 'Search' }, { sep: true },
+      { t: 'macOS Help', k: '⌘?' },
+    ],
+  };
+
+  const macMenu = document.getElementById('macMenu');
+  const macMenuList = document.getElementById('macMenuList');
+  const menuTriggers = Array.from(document.querySelectorAll('.mb-menu-trigger'));
+  let openMenuKey = null;
+
+  const closeMenu = () => {
+    macMenu.hidden = true;
+    openMenuKey = null;
+    menuTriggers.forEach((t) => t.classList.remove('open'));
+  };
+
+  const openMenu = (trigger) => {
+    const key = trigger.dataset.menu;
+    if (openMenuKey === key) { closeMenu(); return; }
+    const items = MENUS[key] || [];
+    macMenuList.innerHTML = items.map((it) => {
+      if (it.sep) return '<li class="sep" aria-hidden="true"></li>';
+      const cls = it.dim ? ' class="dim"' : '';
+      const kbd = it.k ? `<span class="kbd">${it.k}</span>` : '';
+      return `<li${cls}><span>${it.t}</span>${kbd}</li>`;
+    }).join('');
+    const rect = trigger.getBoundingClientRect();
+    macMenu.style.left = `${Math.max(8, rect.left)}px`;
+    macMenu.hidden = false;
+    openMenuKey = key;
+    menuTriggers.forEach((t) => t.classList.toggle('open', t === trigger));
+  };
+
+  menuTriggers.forEach((t) => {
+    t.addEventListener('click', (e) => { e.stopPropagation(); openMenu(t); });
+    // macOS behaviour: with a menu open, hovering another title switches to it
+    t.addEventListener('mouseenter', () => { if (openMenuKey && openMenuKey !== t.dataset.menu) openMenu(t); });
+  });
+  document.addEventListener('click', (e) => {
+    if (openMenuKey && !macMenu.contains(e.target)) closeMenu();
+  });
+  macMenu.addEventListener('click', () => closeMenu());
+
+  // ── Intro: desktop mac scene or mobile mail ──────────────────
   const macNotif = document.getElementById('macNotif');
   const mailWindow = document.getElementById('mailWindow');
   const mailBadge = document.getElementById('mailBadge');
@@ -63,19 +148,30 @@
     }
   };
   applyIntroStage();
-  // Keep the intro responsive until the presentation begins
   desktopIntroQuery.addEventListener('change', () => {
     if (body.dataset.stage === 'mac' || body.dataset.stage === 'mobile-mail') applyIntroStage();
   });
 
+  let mailOpened = false;
   const openMail = () => {
     macNotif.classList.add('hide');
+    mailWindow.classList.remove('minimised');
     mailWindow.classList.add('open');
     mailWindow.setAttribute('aria-hidden', 'false');
     document.getElementById('mbAppName').textContent = 'Mail';
+    if (!mailOpened) {
+      mailOpened = true;
+      setTimeout(() => {
+        const dot = document.querySelector('.ml-dot');
+        if (dot) dot.style.opacity = '0';
+        if (mailBadge) mailBadge.style.display = 'none';
+        if (mwTitle) mwTitle.textContent = 'Inbox';
+      }, 1500);
+    }
   };
   const closeMail = () => {
-    mailWindow.classList.remove('open');
+    mailWindow.classList.remove('open', 'maximised', 'minimised');
+    mailWindow.style.top = ''; mailWindow.style.left = '';
     mailWindow.setAttribute('aria-hidden', 'true');
     document.getElementById('mbAppName').textContent = 'Finder';
   };
@@ -83,36 +179,56 @@
   macNotif.addEventListener('click', openMail);
   document.getElementById('dockMail').addEventListener('click', openMail);
   document.getElementById('mwClose').addEventListener('click', closeMail);
+  document.getElementById('mwMax').addEventListener('click', () => mailWindow.classList.toggle('maximised'));
+  document.getElementById('mwMin').addEventListener('click', () => {
+    mailWindow.classList.add('minimised');
+    mailWindow.classList.remove('open');
+    document.getElementById('mbAppName').textContent = 'Finder';
+  });
 
-  // Mark the F&C email read once the window opens
-  mailWindow.addEventListener('transitionend', () => {
-    if (mailWindow.classList.contains('open')) {
-      setTimeout(() => {
-        const dot = document.querySelector('.ml-dot');
-        if (dot) dot.style.opacity = '0';
-        if (mailBadge) mailBadge.style.display = 'none';
-        if (mwTitle) mwTitle.textContent = 'Inbox';
-      }, 900);
-    }
-  }, { once: true });
+  // Window dragging via title bar
+  const titlebar = document.getElementById('mwTitlebar');
+  let drag = null;
+  titlebar.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.tl')) return;
+    if (mailWindow.classList.contains('maximised')) return;
+    const rect = mailWindow.getBoundingClientRect();
+    drag = { dx: e.clientX - rect.left, dy: e.clientY - rect.top };
+    mailWindow.classList.add('dragging');
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (!drag) return;
+    const w = mailWindow.offsetWidth;
+    let x = e.clientX - drag.dx + w / 2; // centre-based because of translateX(-50%)
+    let y = e.clientY - drag.dy;
+    y = Math.max(30, Math.min(y, window.innerHeight - 60));
+    mailWindow.style.left = `${x}px`;
+    mailWindow.style.top = `${y}px`;
+  });
+  document.addEventListener('mouseup', () => {
+    if (drag) { drag = null; mailWindow.classList.remove('dragging'); }
+  });
+  titlebar.addEventListener('dblclick', (e) => {
+    if (e.target.closest('.tl')) return;
+    mailWindow.classList.toggle('maximised');
+  });
 
-  // ── Welcome sequence ─────────────────────────────────────────
+  // ── Welcome sequence — waits for Begin ───────────────────────
   const welcome = document.getElementById('welcome');
-  let welcomeTimer = null;
 
   const startWelcome = (e) => {
     if (e) e.preventDefault();
+    closeMenu();
     setStage('welcome');
     welcome.setAttribute('aria-hidden', 'false');
     requestAnimationFrame(() => {
       welcome.classList.add('visible');
       setTimeout(() => welcome.classList.add('play'), 350);
     });
-    welcomeTimer = setTimeout(startDeck, CONFIG.welcomeAutoAdvanceMs);
   };
 
   const startDeck = () => {
-    clearTimeout(welcomeTimer);
     setStage('deck');
     document.getElementById('deck').setAttribute('aria-hidden', 'false');
     document.getElementById('deckChrome').setAttribute('aria-hidden', 'false');
@@ -126,7 +242,7 @@
 
   // ── Deck engine ──────────────────────────────────────────────
   const slides = Array.from(document.querySelectorAll('.slide'));
-  const sideNav = document.getElementById('sideNav');
+  const dpList = document.getElementById('dpList');
   const bbDots = document.getElementById('bbDots');
   const bbLabel = document.getElementById('bbLabel');
   const progressFill = document.getElementById('progressFill');
@@ -141,12 +257,11 @@
   slides.forEach((slide, i) => {
     const label = slide.dataset.label || `Slide ${i + 1}`;
 
-    const item = document.createElement('button');
-    item.className = 'sn-item';
-    item.setAttribute('aria-label', label);
-    item.innerHTML = `<span class="sn-label">${label}</span><span class="sn-dot"></span>`;
-    item.addEventListener('click', () => goTo(i));
-    sideNav.appendChild(item);
+    const li = document.createElement('li');
+    li.className = 'dp-item';
+    li.innerHTML = `<button><span class="dp-num">${String(i + 1).padStart(2, '0')}</span><span class="dp-label">${label}</span></button>`;
+    li.querySelector('button').addEventListener('click', () => goTo(i));
+    dpList.appendChild(li);
 
     const dot = document.createElement('button');
     dot.className = 'bb-dot';
@@ -154,8 +269,24 @@
     dot.addEventListener('click', () => goTo(i));
     bbDots.appendChild(dot);
   });
-  const snItems = Array.from(sideNav.children);
+  const dpItems = Array.from(dpList.children);
   const dotItems = Array.from(bbDots.children);
+
+  // Left panel toggle
+  const deckPanel = document.getElementById('deckPanel');
+  const dpToggle = document.getElementById('dpToggle');
+  const desktopNav = window.matchMedia('(min-width: 1024px)');
+  const applyPanelState = (open) => {
+    deckPanel.classList.toggle('closed', !open);
+    dpToggle.classList.toggle('closed', !open);
+    dpToggle.setAttribute('aria-expanded', String(open));
+    dpToggle.setAttribute('aria-label', open ? 'Hide navigation' : 'Show navigation');
+    body.classList.toggle('panel-open', open && desktopNav.matches);
+  };
+  let panelOpen = true;
+  dpToggle.addEventListener('click', () => { panelOpen = !panelOpen; applyPanelState(panelOpen); });
+  desktopNav.addEventListener('change', () => applyPanelState(panelOpen));
+  applyPanelState(true);
 
   // Counter animation
   const animateCounters = (slide) => {
@@ -187,8 +318,9 @@
     slide.classList.add('active');
     slide.scrollTop = 0;
     animateCounters(slide);
+    handleFilmOnSlideChange(slide);
 
-    snItems.forEach((el, i) => el.classList.toggle('active', i === current));
+    dpItems.forEach((el, i) => el.classList.toggle('active', i === current));
     dotItems.forEach((el, i) => el.classList.toggle('active', i === current));
     bbLabel.textContent = slide.dataset.label.replace(/&amp;/g, '&');
     progressFill.style.width = `${((current + 1) / slides.length) * 100}%`;
@@ -203,7 +335,6 @@
   nextBtn.addEventListener('click', next);
   bbPrev.addEventListener('click', prev);
   bbNext.addEventListener('click', next);
-  document.getElementById('coverHint').addEventListener('click', next);
 
   // Keyboard
   document.addEventListener('keydown', (e) => {
@@ -211,13 +342,14 @@
       if (e.key === 'Escape' && body.dataset.stage === 'welcome') startDeck();
       return;
     }
-    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); next(); }
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); next(); }
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
     if (e.key === 'Home') goTo(0);
     if (e.key === 'End') goTo(slides.length - 1);
   });
 
-  // Trackpad / wheel (desktop) — only when slide isn't internally scrollable
+  // Trackpad / wheel (desktop)
   let wheelAccum = 0;
   let wheelCooldown = false;
   document.addEventListener('wheel', (e) => {
@@ -238,7 +370,7 @@
     }
   }, { passive: true });
 
-  // Touch swipe (mobile) — horizontal only, so vertical scroll still works
+  // Touch swipe (mobile) — horizontal only
   let touchX = 0, touchY = 0;
   document.addEventListener('touchstart', (e) => {
     touchX = e.touches[0].clientX;
@@ -246,6 +378,7 @@
   }, { passive: true });
   document.addEventListener('touchend', (e) => {
     if (body.dataset.stage !== 'deck') return;
+    if (e.target.closest('.film') || e.target.closest('.ask-form')) return;
     const dx = e.changedTouches[0].clientX - touchX;
     const dy = e.changedTouches[0].clientY - touchY;
     if (Math.abs(dx) > 64 && Math.abs(dx) > Math.abs(dy) * 1.6) {
@@ -253,9 +386,123 @@
     }
   }, { passive: true });
 
+  // ── The film player ──────────────────────────────────────────
+  const film = document.getElementById('fcFilm');
+  const filmStage = document.getElementById('filmStage');
+  const filmPlay = document.getElementById('filmPlay');
+  const filmMute = document.getElementById('filmMute');
+  const filmVolume = document.getElementById('filmVolume');
+  const filmFull = document.getElementById('filmFull');
+  const filmTrack = document.getElementById('filmTrack');
+  const filmTrackFill = document.getElementById('filmTrackFill');
+  const filmTrackThumb = document.getElementById('filmTrackThumb');
+  const filmTime = document.getElementById('filmTime');
+  const icPlay = filmPlay.querySelector('.ic-play');
+  const icPause = filmPlay.querySelector('.ic-pause');
+  const icMuted = filmMute.querySelector('.ic-muted');
+  const icSound = filmMute.querySelector('.ic-sound');
+
+  const fmtTime = (s) => {
+    if (!isFinite(s)) return '0:00';
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return `${m}:${String(sec).padStart(2, '0')}`;
+  };
+
+  const refreshPlayIcon = () => {
+    icPlay.style.display = film.paused ? '' : 'none';
+    icPause.style.display = film.paused ? 'none' : '';
+    filmPlay.setAttribute('aria-label', film.paused ? 'Play' : 'Pause');
+  };
+  const refreshMuteIcon = () => {
+    const muted = film.muted || film.volume === 0;
+    icMuted.style.display = muted ? '' : 'none';
+    icSound.style.display = muted ? 'none' : '';
+    filmMute.setAttribute('aria-label', muted ? 'Unmute' : 'Mute');
+  };
+
+  filmPlay.addEventListener('click', () => { film.paused ? film.play() : film.pause(); });
+  filmStage.addEventListener('click', (e) => {
+    if (e.target.closest('.film-corner')) return;
+    film.paused ? film.play() : film.pause();
+  });
+  film.addEventListener('play', refreshPlayIcon);
+  film.addEventListener('pause', refreshPlayIcon);
+
+  filmMute.addEventListener('click', () => {
+    film.muted = !film.muted;
+    if (!film.muted && film.volume === 0) film.volume = 1;
+    refreshMuteIcon();
+  });
+  filmVolume.addEventListener('input', () => {
+    film.volume = parseFloat(filmVolume.value);
+    film.muted = film.volume === 0;
+    refreshMuteIcon();
+  });
+
+  filmFull.addEventListener('click', () => {
+    const target = filmStage;
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else if (target.requestFullscreen) {
+      target.requestFullscreen();
+    } else if (film.webkitEnterFullscreen) {
+      film.webkitEnterFullscreen(); // iOS Safari
+    }
+  });
+
+  film.addEventListener('timeupdate', () => {
+    const p = film.duration ? (film.currentTime / film.duration) * 100 : 0;
+    filmTrackFill.style.width = `${p}%`;
+    filmTrackThumb.style.left = `${p}%`;
+    filmTime.textContent = `${fmtTime(film.currentTime)} / ${fmtTime(film.duration)}`;
+  });
+  film.addEventListener('loadedmetadata', () => {
+    filmTime.textContent = `0:00 / ${fmtTime(film.duration)}`;
+  });
+
+  const seekFromEvent = (e) => {
+    const rect = filmTrack.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    if (film.duration) film.currentTime = ratio * film.duration;
+  };
+  let scrubbing = false;
+  filmTrack.addEventListener('mousedown', (e) => { scrubbing = true; seekFromEvent(e); });
+  document.addEventListener('mousemove', (e) => { if (scrubbing) seekFromEvent(e); });
+  document.addEventListener('mouseup', () => { scrubbing = false; });
+  filmTrack.addEventListener('touchstart', seekFromEvent, { passive: true });
+  filmTrack.addEventListener('touchmove', seekFromEvent, { passive: true });
+
+  // Autoplay (muted, per browser policy) when its slide arrives; pause on leave
+  const handleFilmOnSlideChange = (slide) => {
+    if (slide.classList.contains('slide-expect')) {
+      film.muted = true;
+      refreshMuteIcon();
+      const attempt = film.play();
+      if (attempt) attempt.catch(() => {});
+    } else if (!film.paused) {
+      film.pause();
+    }
+  };
+  refreshPlayIcon();
+  refreshMuteIcon();
+
   // Agent video placeholder — wire the real film in here when supplied
   document.getElementById('agentVideo').addEventListener('click', () => {
-    alert('Video placeholder — Anthony’s welcome film drops in here.');
+    alert('Video placeholder — Anthony’s personal welcome drops in here.');
+  });
+
+  // ── Ask form ─────────────────────────────────────────────────
+  const askForm = document.getElementById('askForm');
+  askForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const msg = document.getElementById('askMessage').value.trim();
+    if (!msg) return;
+    // Demo behaviour: show the thank-you state.
+    // Production: POST to an endpoint or open a prefilled mailto.
+    askForm.hidden = true;
+    document.getElementById('askThanks').hidden = false;
   });
 
   // Deep link: #presentation skips the intro entirely

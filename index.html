@@ -7,7 +7,7 @@
 <meta name="description" content="A private presentation prepared exclusively for you by Fine & Country.">
 <meta name="robots" content="noindex">
 <link rel="stylesheet" href="css/style.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231D2124'/><text x='16' y='22' font-family='Georgia' font-size='16' fill='%23A78F51' text-anchor='middle'>F%26C</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23000000'/><text x='16' y='22' font-family='Georgia' font-size='16' fill='%23A78F51' text-anchor='middle'>F%26C</text></svg>">
 </head>
 <body data-stage="mac">
 
@@ -19,16 +19,16 @@
   <!-- Menu bar -->
   <header class="mac-menubar">
     <div class="mb-left">
-      <span class="mb-apple">
+      <button class="mb-apple mb-menu-trigger" data-menu="apple" aria-label="Apple menu">
         <svg viewBox="0 0 814 1000" width="13" height="13" fill="currentColor"><path d="M788 341c-6 4-107 62-107 187 0 145 127 197 131 198-1 3-20 71-67 140-42 61-86 122-153 122s-84-39-161-39c-75 0-102 40-163 40s-104-56-153-125C58 782 12 654 12 533c0-194 126-297 250-297 66 0 121 43 162 43 39 0 100-46 175-46 28 0 130 3 189 108zM549 159c31-37 53-88 53-139 0-7-1-14-2-20-50 2-110 34-146 76-28 32-55 83-55 135 0 8 1 16 2 18 3 1 8 2 13 2 45 0 102-30 135-72z"/></svg>
-      </span>
-      <span class="mb-app" id="mbAppName">Finder</span>
-      <span class="mb-item">File</span>
-      <span class="mb-item">Edit</span>
-      <span class="mb-item">View</span>
-      <span class="mb-item">Go</span>
-      <span class="mb-item">Window</span>
-      <span class="mb-item">Help</span>
+      </button>
+      <button class="mb-app mb-menu-trigger" data-menu="app" id="mbAppName">Finder</button>
+      <button class="mb-item mb-menu-trigger" data-menu="file">File</button>
+      <button class="mb-item mb-menu-trigger" data-menu="edit">Edit</button>
+      <button class="mb-item mb-menu-trigger" data-menu="view">View</button>
+      <button class="mb-item mb-menu-trigger" data-menu="go">Go</button>
+      <button class="mb-item mb-menu-trigger" data-menu="window">Window</button>
+      <button class="mb-item mb-menu-trigger" data-menu="help">Help</button>
     </div>
     <div class="mb-right">
       <span class="mb-icon" title="Battery">
@@ -43,9 +43,14 @@
       <span class="mb-icon" title="Control Centre">
         <svg viewBox="0 0 15 15" width="13" height="13" fill="currentColor"><rect x="0" y="1" width="15" height="5.6" rx="2.8" opacity=".55"/><circle cx="3.8" cy="3.8" r="2.1" fill="#fff"/><rect x="0" y="8.4" width="15" height="5.6" rx="2.8" opacity=".55"/><circle cx="11.2" cy="11.2" r="2.1" fill="#fff"/></svg>
       </span>
-      <span class="mb-clock" id="mbClock">Thu 7 Aug 21:04</span>
+      <span class="mb-clock" id="mbClock">Fri 8 Aug 09:41</span>
     </div>
   </header>
+
+  <!-- Menu bar dropdowns -->
+  <div class="mac-menu" id="macMenu" hidden>
+    <ul id="macMenuList"></ul>
+  </div>
 
   <!-- Notification -->
   <button class="mac-notification" id="macNotif" aria-label="Open email from Fine and Country">
@@ -61,11 +66,11 @@
 
   <!-- Mail window -->
   <section class="mac-window" id="mailWindow" aria-hidden="true">
-    <div class="mw-titlebar">
+    <div class="mw-titlebar" id="mwTitlebar">
       <span class="traffic">
         <button class="tl tl-close" id="mwClose" aria-label="Close window"></button>
-        <span class="tl tl-min"></span>
-        <span class="tl tl-max"></span>
+        <button class="tl tl-min" id="mwMin" aria-label="Minimise window"></button>
+        <button class="tl tl-max" id="mwMax" aria-label="Zoom window"></button>
       </span>
       <span class="mw-title">Inbox — 1 unread</span>
       <span class="mw-tools">
@@ -156,14 +161,15 @@
 
   <!-- Dock -->
   <nav class="mac-dock" aria-label="Dock">
-    <span class="dock-icon" title="Finder"><svg viewBox="0 0 100 100"><defs><linearGradient id="fndr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0ff"/><stop offset="1" stop-color="#1e6fe0"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#fndr)"/><path d="M50 8v84" stroke="#0f4faf" stroke-width="3" fill="none"/><path d="M30 38c0 4 3 6 6 6s6-2 6-6M62 38c0 4 3 6 6 6s6-2 6-6" stroke="#0c3f8f" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M32 66c10 8 26 8 36 0" stroke="#0c3f8f" stroke-width="4" fill="none" stroke-linecap="round"/></svg></span>
-    <span class="dock-icon" title="Safari"><svg viewBox="0 0 100 100"><defs><linearGradient id="sfri" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fd8ff"/><stop offset="1" stop-color="#1a6cf0"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="#f4f6f8"/><circle cx="50" cy="50" r="38" fill="url(#sfri)"/><path d="M67 33 45 45 33 67l22-12z" fill="#fff"/><path d="M67 33 45 45l10 10z" fill="#ff4b40"/></svg></span>
+    <span class="dock-icon" title="Finder"><svg viewBox="0 0 100 100"><defs><linearGradient id="fndrL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9f4fd"/><stop offset="1" stop-color="#c8d8e8"/></linearGradient><linearGradient id="fndrR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#42a5f5"/><stop offset="1" stop-color="#1565c0"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#fndrL)"/><path d="M50 0h28c12.2 0 22 9.8 22 22v56c0 12.2-9.8 22-22 22H50z" fill="url(#fndrR)"/><path d="M50 8v84" stroke="#0d4c94" stroke-width="2.5" fill="none"/><path d="M30 36c0 4.5 2.8 7 6.2 7s6.3-2.5 6.3-7M60 36c0 4.5 2.8 7 6.2 7s6.3-2.5 6.3-7" stroke="#123a63" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M31 64c11 9 27 9 38 0" stroke="#123a63" stroke-width="4" fill="none" stroke-linecap="round"/></svg></span>
+    <span class="dock-icon" title="Safari"><svg viewBox="0 0 100 100"><defs><radialGradient id="sfriG" cx="0.5" cy="0.35" r="0.75"><stop offset="0" stop-color="#5ee0ff"/><stop offset="0.55" stop-color="#2aa2f7"/><stop offset="1" stop-color="#1668e3"/></radialGradient></defs><rect width="100" height="100" rx="22" fill="#f5f6f8"/><circle cx="50" cy="50" r="39" fill="url(#sfriG)"/><circle cx="50" cy="50" r="39" fill="none" stroke="#0e4fb0" stroke-width="1" opacity=".4"/><g stroke="#ffffff" stroke-width="1.6" opacity=".85">
+      <path d="M50 13v6M50 81v6M13 50h6M81 50h6M24 24l4.2 4.2M71.8 71.8 76 76M76 24l-4.2 4.2M28.2 71.8 24 76"/></g><path d="M69.5 30.5 44.5 44 31 69.5 56 56z" fill="#fff"/><path d="M69.5 30.5 44.5 44l12 12z" fill="#ff3b30"/></svg></span>
     <span class="dock-icon dock-mail" id="dockMail" title="Mail"><svg viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="url(#mailg)"/><rect x="18" y="30" width="64" height="42" rx="6" fill="#fff"/><path d="M20 33l30 24 30-24" fill="none" stroke="#c9d4e4" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="dock-badge" id="mailBadge">1</span></span>
     <span class="dock-icon" title="Photos"><svg viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#fff"/><g transform="translate(50 50)"><ellipse rx="11" ry="24" transform="rotate(0) translate(0 -14)" fill="#ffcf3e" opacity=".85"/><ellipse rx="11" ry="24" transform="rotate(45) translate(0 -14)" fill="#ff9500" opacity=".85"/><ellipse rx="11" ry="24" transform="rotate(90) translate(0 -14)" fill="#ff5150" opacity=".85"/><ellipse rx="11" ry="24" transform="rotate(135) translate(0 -14)" fill="#f14bd8" opacity=".85"/><ellipse rx="11" ry="24" transform="rotate(180) translate(0 -14)" fill="#8f4bf1" opacity=".85"/><ellipse rx="11" ry="24" transform="rotate(225) translate(0 -14)" fill="#3e7bff" opacity=".85"/><ellipse rx="11" ry="24" transform="rotate(270) translate(0 -14)" fill="#38c25f" opacity=".85"/><ellipse rx="11" ry="24" transform="rotate(315) translate(0 -14)" fill="#9fd934" opacity=".85"/></g></svg></span>
     <span class="dock-icon" title="Calendar"><svg viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#fff"/><path d="M0 22C0 9.8 9.8 0 22 0h56c12.2 0 22 9.8 22 22v8H0v-8z" fill="#ff4b40"/><text x="50" y="24" text-anchor="middle" font-family="-apple-system, Helvetica" font-size="15" fill="#fff" font-weight="600">AUG</text><text x="50" y="76" text-anchor="middle" font-family="-apple-system, Helvetica" font-size="44" fill="#333" font-weight="300">7</text></svg></span>
     <span class="dock-icon" title="Notes"><svg viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#fff"/><path d="M0 0h100v26H0z" fill="#ffd94a" opacity=".9"/><rect x="14" y="40" width="72" height="5" rx="2.5" fill="#d9dade"/><rect x="14" y="56" width="72" height="5" rx="2.5" fill="#d9dade"/><rect x="14" y="72" width="46" height="5" rx="2.5" fill="#d9dade"/></svg></span>
     <span class="dock-icon" title="Music"><svg viewBox="0 0 100 100"><defs><linearGradient id="msc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6b81"/><stop offset="1" stop-color="#f0294b"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#msc)"/><path d="M64 22 40 28v34a10 10 0 1 0 6 9V38l18-4.5V52a10 10 0 1 0 6 9V22z" fill="#fff" transform="translate(-3 3)"/></svg></span>
-    <span class="dock-icon" title="System Settings"><svg viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#e6e7e9"/><circle cx="50" cy="50" r="30" fill="#9aa0a8"/><circle cx="50" cy="50" r="13" fill="#e6e7e9"/><g fill="#7c828a"><rect x="46" y="12" width="8" height="14" rx="3"/><rect x="46" y="74" width="8" height="14" rx="3"/><rect x="12" y="46" width="14" height="8" rx="3"/><rect x="74" y="46" width="14" height="8" rx="3"/><rect x="20" y="20" width="8" height="14" rx="3" transform="rotate(-45 24 27)"/><rect x="72" y="66" width="8" height="14" rx="3" transform="rotate(-45 76 73)"/><rect x="66" y="20" width="8" height="14" rx="3" transform="rotate(45 70 27)"/><rect x="26" y="66" width="8" height="14" rx="3" transform="rotate(45 30 73)"/></g></svg></span>
+    <span class="dock-icon" title="System Settings"><svg viewBox="0 0 100 100"><defs><linearGradient id="stg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdfdfe"/><stop offset="1" stop-color="#c6c9cf"/></linearGradient></defs><rect width="100" height="100" rx="22" fill="url(#stg)"/><g fill="#83878f"><path d="M50 20a4 4 0 0 1 4 4v4.3a22 22 0 0 1 6.9 2.9l3.1-3.1a4 4 0 0 1 5.6 0l2.3 2.3a4 4 0 0 1 0 5.6l-3.1 3.1a22 22 0 0 1 2.9 6.9H76a4 4 0 0 1 4 4v3.2a4 4 0 0 1-4 4h-4.3a22 22 0 0 1-2.9 6.9l3.1 3.1a4 4 0 0 1 0 5.6l-2.3 2.3a4 4 0 0 1-5.6 0l-3.1-3.1a22 22 0 0 1-6.9 2.9V76a4 4 0 0 1-4 4h-3.2a4 4 0 0 1-4-4v-4.3a22 22 0 0 1-6.9-2.9l-3.1 3.1a4 4 0 0 1-5.6 0l-2.3-2.3a4 4 0 0 1 0-5.6l3.1-3.1a22 22 0 0 1-2.9-6.9H20a4 4 0 0 1-4-4v-3.2a4 4 0 0 1 4-4h4.3a22 22 0 0 1 2.9-6.9l-3.1-3.1a4 4 0 0 1 0-5.6l2.3-2.3a4 4 0 0 1 5.6 0l3.1 3.1a22 22 0 0 1 6.9-2.9V24a4 4 0 0 1 4-4z"/></g><circle cx="48.4" cy="51.6" r="13" fill="#e8eaed"/></svg></span>
     <span class="dock-sep" aria-hidden="true"></span>
     <span class="dock-icon" title="Bin"><svg viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#f2f3f5"/><path d="M30 34h40l-3.4 42a6 6 0 0 1-6 5.5H39.4a6 6 0 0 1-6-5.5L30 34z" fill="#c8ccd2"/><rect x="26" y="26" width="48" height="7" rx="3.5" fill="#b7bcc4"/><rect x="42" y="20" width="16" height="8" rx="3" fill="#b7bcc4"/></svg></span>
   </nav>
@@ -238,68 +244,85 @@
      ════════════════════════════════════════════════════════════ -->
 <main id="deck" class="deck" aria-hidden="true">
 
-  <!-- 01 · Cover -->
+  <!-- 01 · Cover — split: image | jet black invitation panel -->
   <section class="slide slide-cover" data-label="Welcome">
-    <div class="cover-bg" aria-hidden="true"><img src="assets/img/manor-house.jpg" alt=""></div>
-    <div class="cover-scrim" aria-hidden="true"></div>
-    <div class="slide-content cover-content">
-      <img src="assets/img/fc-logo.png" alt="Fine &amp; Country" class="cover-logo reveal">
-      <p class="eyebrow light reveal">A private presentation</p>
-      <h1 class="cover-title reveal">Townhead Farmhouse</h1>
-      <p class="cover-sub reveal">Prepared exclusively for Mr John Henderson</p>
-      <div class="cover-meta reveal">
-        <span>Saturday 9th August 2026</span>
-        <span class="cm-dot" aria-hidden="true"></span>
-        <span>10:00 am</span>
-        <span class="cm-dot" aria-hidden="true"></span>
-        <span>Bonsall · Derbyshire</span>
+    <div class="cover-media" aria-hidden="true"><img src="assets/img/manor-house.jpg" alt=""></div>
+    <div class="cover-panel">
+      <div class="cover-panel-inner">
+        <img src="assets/img/fc-logo.png" alt="Fine &amp; Country" class="cover-logo reveal">
+        <p class="eyebrow gold reveal">A private presentation</p>
+        <h1 class="cover-title reveal">Townhead <br>Farmhouse</h1>
+        <p class="cover-sub reveal">Prepared exclusively for Mr John Henderson</p>
+        <div class="cover-details reveal">
+          <div class="cd-row"><span class="cd-label">Date</span><span class="cd-value">Saturday 9th August 2026</span></div>
+          <div class="cd-row"><span class="cd-label">Time</span><span class="cd-value">10:00 am</span></div>
+          <div class="cd-row"><span class="cd-label">Address</span><span class="cd-value">Townhead Farmhouse, Bonsall, Derbyshire</span></div>
+          <div class="cd-row"><span class="cd-label">Your agent</span><span class="cd-value">Anthony Taylor · Partner Agent</span></div>
+        </div>
+        <div class="cover-signoff reveal">
+          <p class="signature">Anthony Taylor</p>
+          <p class="signoff-note">We look forward to welcoming you</p>
+        </div>
       </div>
-      <p class="script-line reveal">We value the little things that make a home</p>
     </div>
-    <button class="cover-hint" id="coverHint" aria-label="Continue">
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="m5 9 7 7 7-7"/></svg>
-    </button>
   </section>
 
-  <!-- 02 · What to expect -->
+  <!-- 02 · What to expect — copy + film -->
   <section class="slide slide-expect" data-label="Your appointment">
     <div class="slide-content two-col">
       <div class="col-text">
         <p class="eyebrow reveal">Your valuation appointment</p>
-        <h2 class="slide-title reveal">What to expect<br>on Saturday</h2>
-        <p class="body-copy reveal">Thank you for inviting us to value your home on <strong>Saturday 9th August at 10:00&nbsp;am</strong>. The valuation is an important part of the appraisal process, for you and for us — your consultant will be with you for around two hours, depending on the size of your property and the questions you may have.</p>
-        <p class="body-copy reveal">It is a conversation, not an inspection alone: everything we learn about your home shapes the strategy we build for it.</p>
-        <div class="expect-stats reveal">
-          <div class="es-item">
-            <p class="es-num"><span class="count" data-count="35">0</span>%</p>
-            <p class="es-label">National average sale fall-through rate</p>
-          </div>
-          <div class="es-rule" aria-hidden="true"></div>
-          <div class="es-item es-gold">
-            <p class="es-num"><span class="count" data-count="17">0</span>%</p>
-            <p class="es-label">Fine &amp; Country fall-through rate</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-steps">
-        <ol class="steps">
-          <li class="step reveal">
+        <h2 class="slide-title reveal">What to expect <br>on Saturday</h2>
+        <p class="body-copy reveal">Thank you for inviting us to value your home on <strong>Saturday 9th August at 10:00&nbsp;am</strong>. Your consultant will be with you for around two hours — a conversation, not an inspection alone.</p>
+        <ol class="steps reveal">
+          <li class="step">
             <span class="step-num">01</span>
-            <div><h3>A thorough walkthrough</h3><p>A detailed look at the inside and outside of your home, to gain a full insight into its unique features.</p></div>
+            <div><h3>A thorough walkthrough</h3><p>Inside and out, to gain a full insight into your home's unique features.</p></div>
           </li>
-          <li class="step reveal">
+          <li class="step">
             <span class="step-num">02</span>
-            <div><h3>A considered evaluation</h3><p>Every improvement you have made is taken into account, alongside local, regional and national market conditions.</p></div>
+            <div><h3>A considered evaluation</h3><p>Every improvement you have made, alongside local, regional and national market conditions.</p></div>
           </li>
-          <li class="step reveal">
+          <li class="step">
             <span class="step-num">03</span>
             <div><h3>A pricing strategy</h3><p>Developed to reflect the true value of your property — never simply a number to win your instruction.</p></div>
           </li>
-          <li class="step reveal">
+          <li class="step">
             <span class="step-num">04</span>
-            <div><h3>A bespoke marketing plan</h3><p>Created together, to showcase your home's character and reach the right buyers — wherever in the world they are.</p></div>
+            <div><h3>A bespoke marketing plan</h3><p>Created together, to reach the right buyers — wherever in the world they are.</p></div>
           </li>
         </ol>
+      </div>
+      <div class="col-media">
+        <div class="film reveal" id="filmPlayer">
+          <div class="film-stage" id="filmStage">
+            <video id="fcFilm" src="assets/video/fc-pre-valuation.mp4" playsinline preload="metadata" muted></video>
+            <div class="film-corner film-corner-tl">
+              <button class="film-btn" id="filmMute" aria-label="Unmute">
+                <svg class="ic-muted" viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="m16.5 9.5 5 5m0-5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                <svg class="ic-sound" viewBox="0 0 24 24" width="17" height="17" fill="currentColor" style="display:none"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M18.8 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </button>
+              <input type="range" class="film-volume" id="filmVolume" min="0" max="1" step="0.05" value="1" aria-label="Volume">
+            </div>
+            <div class="film-corner film-corner-tr">
+              <button class="film-btn" id="filmFull" aria-label="Full screen">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="film-bar">
+            <button class="film-btn film-play" id="filmPlay" aria-label="Pause">
+              <svg class="ic-play" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="display:none"><path d="M8 5.5v13l11-6.5z"/></svg>
+              <svg class="ic-pause" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+            </button>
+            <div class="film-track" id="filmTrack">
+              <div class="film-track-fill" id="filmTrackFill"></div>
+              <div class="film-track-thumb" id="filmTrackThumb"></div>
+            </div>
+            <span class="film-time" id="filmTime">0:00 / 0:00</span>
+          </div>
+          <p class="film-caption">What to expect at your valuation — the Fine &amp; Country approach</p>
+        </div>
       </div>
     </div>
   </section>
@@ -308,7 +331,7 @@
   <section class="slide slide-why dark" data-label="Why Fine &amp; Country">
     <div class="slide-content">
       <p class="eyebrow gold reveal">Why Fine &amp; Country</p>
-      <h2 class="slide-title light reveal">A refreshing approach to<br>selling exclusive homes</h2>
+      <h2 class="slide-title light reveal">A refreshing approach to <br>selling exclusive homes</h2>
       <p class="body-copy light-copy reveal">We combine individual flair and attention to detail with the expertise of local agents — creating a strong international network with powerful marketing capabilities.</p>
       <div class="stat-grid">
         <div class="stat reveal">
@@ -328,31 +351,44 @@
           <p class="stat-label">Raised by The Fine &amp; Country Foundation to fight homelessness</p>
         </div>
       </div>
-      <p class="why-note reveal">Park Lane, London — our international showcase — puts your home in front of buyers from Mayfair to Mauritius.</p>
+      <div class="why-split reveal">
+        <div class="es-item">
+          <p class="es-num"><span class="count" data-count="35">0</span>%</p>
+          <p class="es-label light-label">National average sale fall-through rate</p>
+        </div>
+        <div class="es-rule dark-rule" aria-hidden="true"></div>
+        <div class="es-item es-gold">
+          <p class="es-num"><span class="count" data-count="17">0</span>%</p>
+          <p class="es-label light-label">Fine &amp; Country fall-through rate</p>
+        </div>
+        <p class="why-note">Park Lane, London — our international showcase — puts your home in front of buyers from Mayfair to Mauritius.</p>
+      </div>
     </div>
   </section>
 
-  <!-- 04 · The ethos -->
+  <!-- 04 · The ethos — clean, typographic -->
   <section class="slide slide-ethos" data-label="Our ethos">
-    <div class="ethos-media" aria-hidden="true"><img src="assets/img/interior-lounge.jpg" alt=""></div>
-    <div class="ethos-panel">
-      <div class="ethos-inner">
-        <p class="eyebrow reveal">Our ethos</p>
-        <h2 class="slide-title reveal">Exceptional homes,<br>beautifully presented</h2>
+    <div class="slide-content">
+      <p class="eyebrow reveal">Our ethos</p>
+      <h2 class="slide-title reveal">Exceptional homes, <br>beautifully presented</h2>
+      <div class="pillar-row">
         <div class="pillar reveal">
-          <h3><span class="pillar-num">I</span> Presentation</h3>
+          <p class="pillar-num">I</p>
+          <h3>Presentation</h3>
           <p>Editorial photography, cinematic property films and lifestyle-led storytelling that show your home at its absolute best.</p>
         </div>
         <div class="pillar reveal">
-          <h3><span class="pillar-num">II</span> Exposure</h3>
+          <p class="pillar-num">II</p>
+          <h3>Exposure</h3>
           <p>From the national press to <em>Refined</em> magazine and a network spanning 300+ locations worldwide — seen by the right people, wherever they are.</p>
         </div>
         <div class="pillar reveal">
-          <h3><span class="pillar-num">III</span> Service</h3>
+          <p class="pillar-num">III</p>
+          <h3>Service</h3>
           <p>A dedicated Partner Agent at your side seven days a week, from valuation through to completion.</p>
         </div>
-        <p class="script-line dark-script reveal">We value the little things that make a home</p>
       </div>
+      <p class="script-line dark-script reveal">We value the little things that make a home</p>
     </div>
   </section>
 
@@ -370,8 +406,9 @@
             <p class="ap-role">Partner Agent · Fine &amp; Country Derbyshire</p>
           </figcaption>
         </figure>
+        <div class="agent-rule reveal" aria-hidden="true"></div>
         <button class="agent-video reveal" id="agentVideo" aria-label="Play a welcome from Anthony">
-          <span class="av-play"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span>
+          <span class="av-play"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span>
           <span class="av-label">A personal welcome from Anthony<em>Watch the video · 1 min</em></span>
         </button>
       </div>
@@ -389,33 +426,53 @@
     </div>
   </section>
 
-  <!-- 06 · Questions & farewell -->
-  <section class="slide slide-close dark" data-label="Any questions">
+  <!-- 06 · What people say -->
+  <section class="slide slide-praise" data-label="Kind words">
     <div class="slide-content">
-      <p class="eyebrow gold reveal">Before Saturday</p>
-      <h2 class="slide-title light reveal">Any questions?</h2>
-      <p class="body-copy light-copy reveal">If anything comes to mind before your appointment — about the valuation, our services, or the market — Anthony is always happy to talk.</p>
-      <div class="review-row">
+      <p class="eyebrow reveal">Kind words</p>
+      <h2 class="slide-title reveal">What people say <br>about Anthony</h2>
+      <div class="praise-row">
         <!-- SAMPLE REVIEWS — replace with genuine client reviews before use -->
-        <figure class="review reveal">
+        <figure class="praise reveal">
           <div class="review-stars" aria-label="Five stars">★★★★★</div>
           <blockquote>From first meeting to completion, the attention to detail was exceptional. Our home was presented beautifully and sold within weeks.</blockquote>
           <figcaption>J.W. · Duffield</figcaption>
         </figure>
-        <figure class="review reveal">
+        <figure class="praise reveal">
           <div class="review-stars" aria-label="Five stars">★★★★★</div>
           <blockquote>The photography and brochure were in a different league. We felt in expert hands from start to finish.</blockquote>
           <figcaption>S.&nbsp;&amp;&nbsp;M.&nbsp;P. · Ashbourne</figcaption>
         </figure>
-        <figure class="review reveal">
+        <figure class="praise reveal">
           <div class="review-stars" aria-label="Five stars">★★★★★</div>
           <blockquote>Anthony's communication was outstanding — honest advice, always available, and a result beyond our expectations.</blockquote>
           <figcaption>R.H. · Matlock</figcaption>
         </figure>
       </div>
-      <div class="close-ctas reveal">
-        <a class="btn-gold" href="tel:+441332973888">Call 01332 973 888</a>
-        <a class="btn-ghost" href="mailto:anthony.taylor@fineandcountry.com">Email Anthony</a>
+      <p class="praise-note reveal">Read more of our clients' experiences on Google Reviews</p>
+    </div>
+  </section>
+
+  <!-- 07 · Any questions -->
+  <section class="slide slide-close dark" data-label="Any questions">
+    <div class="slide-content">
+      <p class="eyebrow gold reveal">Before Saturday</p>
+      <h2 class="slide-title light reveal">Any questions?</h2>
+      <p class="body-copy light-copy reveal">If anything comes to mind before your appointment — about the valuation, our services, or the market — send Anthony a note below. He will come back to you personally.</p>
+      <form class="ask-form reveal" id="askForm">
+        <textarea id="askMessage" rows="5" placeholder="Write your message to Anthony…" aria-label="Your message"></textarea>
+        <div class="ask-actions">
+          <button type="submit" class="btn-gold">Send message</button>
+          <div class="ask-alt">
+            <a href="tel:+441332973888">01332 973 888</a>
+            <span class="ask-dot" aria-hidden="true"></span>
+            <a href="mailto:anthony.taylor@fineandcountry.com">anthony.taylor@fineandcountry.com</a>
+          </div>
+        </div>
+      </form>
+      <div class="ask-thanks" id="askThanks" hidden>
+        <p class="ask-thanks-title">Thank you</p>
+        <p class="ask-thanks-copy">Your message is on its way — Anthony will be in touch shortly.</p>
       </div>
       <p class="script-line reveal">We look forward to welcoming you on Saturday</p>
       <div class="close-monogram reveal" aria-hidden="true">
@@ -429,8 +486,19 @@
 <div class="deck-chrome" id="deckChrome" aria-hidden="true">
   <div class="progress-rail" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
 
-  <!-- Desktop side nav -->
-  <nav class="side-nav" id="sideNav" aria-label="Slides"></nav>
+  <!-- Desktop left panel nav -->
+  <nav class="deck-panel" id="deckPanel" aria-label="Slides">
+    <div class="dp-head">
+      <img src="assets/img/fc-logo.png" alt="Fine &amp; Country" class="dp-logo">
+    </div>
+    <ol class="dp-list" id="dpList"></ol>
+    <div class="dp-foot">
+      <p>Prepared for Mr John Henderson</p>
+    </div>
+  </nav>
+  <button class="dp-toggle" id="dpToggle" aria-label="Hide navigation" aria-expanded="true">
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 6l-6 6 6 6"/></svg>
+  </button>
 
   <!-- Desktop arrows -->
   <div class="deck-arrows">
