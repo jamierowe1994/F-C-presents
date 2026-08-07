@@ -567,13 +567,13 @@ body:not([data-stage="deck"]) .deck-chrome { display: none; }
 }
 /* Stat grid's first rule aligns with the top of the grey intro box */
 .why-inner .stat-grid { margin-top: 0; }
+.why-left { flex: 1.1; min-width: 0; }
 .why-intro {
-  flex: 1.1; min-width: 0;
   background: var(--cream);
   padding: clamp(28px, 3.4vw, 46px);
 }
 .why-intro .body-copy { margin-bottom: 0; }
-.why-fallthrough { display: flex; align-items: center; gap: clamp(20px, 2.6vw, 40px); margin-top: 26px; }
+.why-fallthrough { display: flex; align-items: center; gap: clamp(20px, 2.6vw, 40px); margin-top: 30px; }
 .es-num { font-family: var(--serif); font-size: clamp(30px, 3.4vw, 40px); color: var(--charcoal); line-height: 1; }
 .es-gold .es-num { color: var(--gold); }
 .es-label { font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 8px; max-width: 20ch; line-height: 1.6; color: var(--body); }
@@ -634,8 +634,8 @@ body:not([data-stage="deck"]) .deck-chrome { display: none; }
 .mk-item { font-size: 12px; line-height: 1.5; color: var(--charcoal); padding: 5px 0; letter-spacing: 0.02em; }
 .mk-item em { font-style: italic; font-family: var(--serif); }
 
-/* 05 · Agent */
-.agent-cols { align-items: flex-start; }
+/* 05 · Agent — columns top-aligned with each other, row centred on the page */
+.agent-row { display: flex; align-items: flex-start; gap: clamp(40px, 5vw, 80px); }
 .agent-media { flex: 0.85; display: flex; flex-direction: column; min-width: 0; }
 .agent-photo { position: relative; }
 .agent-photo-img { width: 100%; aspect-ratio: 44 / 46; object-fit: cover; display: block; }
@@ -852,8 +852,9 @@ body.panel-open .progress-rail { left: var(--panel-w); }
   .mk-card.open .mk-back { display: flex; opacity: 1; transform: none; }
   .mk-card:hover .mk-front { opacity: 1; transform: none; }
   .mk-hint { margin-top: 14px; }
+  .agent-row { flex-direction: column; align-items: stretch; gap: 30px; }
   .agent-media { order: 2; margin-top: 6px; }
-  .agent-cols .col-text { order: 1; }
+  .agent-row .col-text { order: 1; }
   .ask-actions { flex-direction: column; align-items: stretch; }
   .ask-actions .btn-gold { width: 100%; }
   .ask-alt { justify-content: center; }
